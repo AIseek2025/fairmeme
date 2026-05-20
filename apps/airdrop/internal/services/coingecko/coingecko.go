@@ -14,6 +14,7 @@ import (
 
 const (
 	DefaultApiUrl           = "https://pro-api.coingecko.com/api/v3"
+	PublicApiUrl            = "https://api.coingecko.com/api/v3"
 	DefaultGetPriceInterval = 5 * time.Minute
 	cgkMaxPage              = 250
 )
@@ -264,7 +265,9 @@ func (c *Client) doRequest(url string) ([]byte, error) {
 		return nil, err
 	}
 	req.Header.Add("accept", "application/json")
-	req.Header.Add("x-cg-pro-api-key", c.apiKey)
+	if c.apiKey != "" {
+		req.Header.Add("x-cg-pro-api-key", c.apiKey)
+	}
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err

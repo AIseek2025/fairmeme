@@ -1,0 +1,76 @@
+app:
+  name: "fairmeme-api"
+  env: "prod"
+  version: "v0.0.0"
+  host: "127.0.0.1"
+  enableStat: true
+  enableMetrics: true
+  enableHTTPProfile: false
+  enableLimit: false
+  enableCircuitBreaker: false
+  enableTrace: false
+  tracingSamplingRate: 1.0
+  registryDiscoveryType: ""
+  cacheType: "redis"
+
+http:
+  port: 18081
+  timeout: 0
+
+logger:
+  level: "info"
+  format: "json"
+  isSave: false
+
+database:
+  driver: "postgresql"
+  postgresql:
+    dsn: "fairmeme:CHANGE_ME@127.0.0.1:55433/fairmeme?sslmode=disable"
+    enableLog: false
+    maxIdleConns: 10
+    maxOpenConns: 100
+    connMaxLifetime: 30
+
+redis:
+  dsn: "default:CHANGE_ME@127.0.0.1:56380/0"
+  dialTimeout: 10
+  readTimeout: 2
+  writeTimeout: 2
+
+jaeger:
+  agentHost: "127.0.0.1"
+  agentPort: 6831
+
+consul:
+  addr: "127.0.0.1:8500"
+
+etcd:
+  addrs: ["127.0.0.1:2379"]
+
+nacosRd:
+  ipAddr: "127.0.0.1"
+  port: 8848
+  namespaceID: ""
+
+clickHouse:
+  host: ""
+  port: "9000"
+  dbname: "default"
+  user: "default"
+  pwd: ""
+
+awsS3:
+  access_key_id: ""
+  secret_access_key: ""
+  bucket_name: "fairmeme-bucket"
+  region: "ap-southeast-1"
+
+solana:
+  url: "https://api.mainnet-beta.solana.com"
+  wssUrl: "wss://api.mainnet-beta.solana.com"
+
+chainLink:
+  url: "https://rpc.payload.de"
+
+ethereum:
+  url: "https://ethereum-rpc.publicnode.com"

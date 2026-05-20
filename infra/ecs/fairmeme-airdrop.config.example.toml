@@ -1,0 +1,36 @@
+port = "18082"
+snapshot-time = 1727654400
+snapshot-slot-change = 100
+
+[redis]
+addr = "127.0.0.1:56380"
+password = "CHANGE_ME"
+db = 0
+
+[db]
+host = "127.0.0.1"
+user = "fairmeme"
+name = "fairmeme"
+password = "CHANGE_ME"
+port = "55433"
+sslmode = "disable"
+
+[[chains]]
+name = "solana"
+chain-id = 900
+rpc-url = "https://api.mainnet-beta.solana.com"
+
+[[chains]]
+name = "eth"
+chain-id = 1
+rpc-url = "https://eth.llamarpc.com"
+
+[[chains]]
+name = "base"
+chain-id = 8453
+rpc-url = "https://base.llamarpc.com"
+
+[[chains]]
+name = "bsc"
+chain-id = 56
+rpc-url = "https://binance.llamarpc.com"

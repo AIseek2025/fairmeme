@@ -2,8 +2,6 @@ package airdrop
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"log/slog"
 	"math/big"
 	"os"
@@ -82,11 +80,21 @@ func (a *airdrop) CheckAirdrop(userAddress string, chainName string) (*CheckAird
 	}
 	client, ok := a.clients[chainName]
 	if !ok {
-		return nil, fmt.Errorf("chain %s is not supported", chainName)
+		a.logger.Warn("airdrop client unavailable, fallback to ineligible", "chain_name", chainName)
+		return &CheckAirdropResult{
+			Chain:       chainName,
+			UserAddress: userAddress,
+			Eligible:    false,
+		}, nil
 	}
 
 	if client.GetChainName() == chains.Solana && !a.solanaSync.IsSynced() {
-		return nil, fmt.Errorf("solana service is not synced")
+		a.logger.Warn("solana service is not synced, fallback to ineligible", "chain_name", chainName)
+		return &CheckAirdropResult{
+			Chain:       chainName,
+			UserAddress: userAddress,
+			Eligible:    false,
+		}, nil
 	}
 
 	var blockSnapshot *big.Int
@@ -95,7 +103,12 @@ func (a *airdrop) CheckAirdrop(userAddress string, chainName string) (*CheckAird
 	} else {
 		block, err := client.EstimateBlockAtTimestamp(a.ctx, a.config.SnapshotTime)
 		if err != nil {
-			return nil, err
+			a.logger.Warn("estimate block failed, fallback to ineligible", "chain_name", chainName, "err", err)
+			return &CheckAirdropResult{
+				Chain:       chainName,
+				UserAddress: userAddress,
+				Eligible:    false,
+			}, nil
 		}
 		blockSnapshot = block
 	}
@@ -107,7 +120,12 @@ func (a *airdrop) CheckAirdrop(userAddress string, chainName string) (*CheckAird
 		BlockNumber: blockSnapshot,
 	})
 	if err != nil {
-		return nil, err
+		a.logger.Warn("get total usd failed, fallback to ineligible", "chain_name", chainName, "err", err)
+		return &CheckAirdropResult{
+			Chain:       chainName,
+			UserAddress: userAddress,
+			Eligible:    false,
+		}, nil
 	}
 
 	eligible := false
@@ -137,7 +155,7 @@ var _ Airdrop = &airdrop{}
 
 func NewAirdrop(ctx context.Context, logger *slog.Logger, config *Config) (Airdrop, error) {
 	err := godotenv.Load()
-	if err != nil {
+	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
 	a := &airdrop{
@@ -169,15 +187,20 @@ func (a *airdrop) init() error {
 	a.db = db
 
 	morailsApiKey := os.Getenv("MORALIS_API_KEY")
-	if morailsApiKey == "" {
-		return errors.New("missing env MORALIS_API_KEY")
-	}
 	cgkApiKey := os.Getenv("CGK_API_KEY")
+	enableSolanaAirdrop := true
 	if cgkApiKey == "" {
-		return errors.New("missing env CGK_API_KEY")
+		enableSolanaAirdrop = false
+		a.logger.Warn("CGK_API_KEY missing, Solana airdrop checks will be disabled")
+	}
+	if morailsApiKey == "" {
+		a.logger.Warn("MORALIS_API_KEY missing, EVM airdrop checks will be disabled")
 	}
 	for _, chain := range a.config.Chains {
 		if chain.Name == "solana" {
+			if !enableSolanaAirdrop {
+				continue
+			}
 			cgk, err := coingecko.NewClient(a.ctx, a.logger, coingecko.DefaultApiUrl, cgkApiKey)
 			if err != nil {
 				return err
@@ -194,6 +217,9 @@ func (a *airdrop) init() error {
 			}
 			a.solanaSync = solanaSync
 		} else {
+			if morailsApiKey == "" {
+				continue
+			}
 			client, err := eth.NewService(a.logger, chain.Name, chain.RpcUrl, morailsApiKey)
 			if err != nil {
 				return err

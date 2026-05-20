@@ -1,0 +1,27 @@
+services:
+  fairmeme-postgres:
+    image: postgres:16-alpine
+    container_name: fairmeme-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: fairmeme
+      POSTGRES_USER: fairmeme
+      POSTGRES_PASSWORD: ${FAIRMEME_DB_PASSWORD}
+    ports:
+      - "127.0.0.1:55433:5432"
+    volumes:
+      - fairmeme_postgres_data:/var/lib/postgresql/data
+
+  fairmeme-redis:
+    image: redis:7-alpine
+    container_name: fairmeme-redis
+    restart: always
+    command: ["redis-server", "--requirepass", "${FAIRMEME_REDIS_PASSWORD}"]
+    ports:
+      - "127.0.0.1:56380:6379"
+    volumes:
+      - fairmeme_redis_data:/data
+
+volumes:
+  fairmeme_postgres_data:
+  fairmeme_redis_data:
