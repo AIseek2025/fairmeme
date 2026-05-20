@@ -7,6 +7,8 @@ DEPLOY_REMOTE="${DEPLOY_REMOTE:-admin@8.218.209.218}"
 DEPLOY_DOMAIN="${DEPLOY_DOMAIN:-fairmeme.top}"
 DEPLOY_APP_ROOT="${DEPLOY_APP_ROOT:-/var/www/fairmeme}"
 DEPLOY_PORT="${DEPLOY_PORT:-3007}"
+API_PORT="${API_PORT:-18081}"
+AIRDROP_PORT="${AIRDROP_PORT:-18082}"
 TMP_DIR="$(mktemp -d)"
 ARCHIVE_PATH="${TMP_DIR}/fairmeme-web.tgz"
 SERVICE_NAME="fairmeme-web"
@@ -89,37 +91,92 @@ sudo systemctl restart ${SERVICE_NAME}
 systemctl is-active ${SERVICE_NAME}
 EOF
 
-echo "[6/6] 写入 HTTP Nginx 配置并验证回环"
-ssh "${DEPLOY_REMOTE}" "bash -s" <<EOF
+echo "[6/6] 写入 Nginx 配置并验证回环"
+ssh "${DEPLOY_REMOTE}" "DEPLOY_DOMAIN='${DEPLOY_DOMAIN}' DEPLOY_PORT='${DEPLOY_PORT}' API_PORT='${API_PORT}' AIRDROP_PORT='${AIRDROP_PORT}' bash -s" <<'EOF'
 set -euo pipefail
-cat <<NGINX | sudo tee /etc/nginx/conf.d/${DEPLOY_DOMAIN}.conf >/dev/null
+cat <<'NGINX' >/tmp/fairmeme-web-nginx.conf
 server {
     listen 80;
-    server_name ${DEPLOY_DOMAIN} www.${DEPLOY_DOMAIN};
+    server_name __DEPLOY_DOMAIN__ www.__DEPLOY_DOMAIN__;
 
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
     }
 
     location / {
-        proxy_pass http://127.0.0.1:${DEPLOY_PORT};
+        return 301 https://__DEPLOY_DOMAIN__$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name www.__DEPLOY_DOMAIN__;
+
+    ssl_certificate /etc/letsencrypt/live/__DEPLOY_DOMAIN__/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/__DEPLOY_DOMAIN__/privkey.pem;
+
+    return 301 https://__DEPLOY_DOMAIN__$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name __DEPLOY_DOMAIN__;
+
+    ssl_certificate /etc/letsencrypt/live/__DEPLOY_DOMAIN__/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/__DEPLOY_DOMAIN__/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Frame-Options SAMEORIGIN always;
+    add_header X-Content-Type-Options nosniff always;
+
+    location = /health {
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    location /api/v1/ {
+        proxy_pass http://127.0.0.1:__API_PORT__/api/v1/;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /api/v2/ {
+        proxy_pass http://127.0.0.1:__AIRDROP_PORT__/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:__DEPLOY_PORT__;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_cache_bypass \$http_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
     }
 
     access_log /var/log/nginx/fairmeme_access.log;
     error_log  /var/log/nginx/fairmeme_error.log;
 }
 NGINX
+sed -i "s/__DEPLOY_DOMAIN__/${DEPLOY_DOMAIN}/g; s/__DEPLOY_PORT__/${DEPLOY_PORT}/g; s/__API_PORT__/${API_PORT}/g; s/__AIRDROP_PORT__/${AIRDROP_PORT}/g" /tmp/fairmeme-web-nginx.conf
+sudo mv /tmp/fairmeme-web-nginx.conf /etc/nginx/conf.d/${DEPLOY_DOMAIN}.conf
 sudo nginx -t
 sudo systemctl reload nginx
 curl -I http://127.0.0.1:${DEPLOY_PORT} | head -5
+curl -I https://${DEPLOY_DOMAIN}/health | head -5
 EOF
 
-echo "部署完成：先确认 http://${DEPLOY_DOMAIN} 可访问，再执行 scripts/ecs/setup-ssl.sh"
+echo "部署完成：站点、API、Airdrop 与 HTTPS 路由已保持一致"
