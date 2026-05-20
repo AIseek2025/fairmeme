@@ -8,7 +8,7 @@ import { logo, navIcon, search, xSpace } from '@/assets/images';
 import { jwtDecode } from 'jwt-decode';
 import { usePathname } from 'next/navigation';
 import CustomConnectButton from '../connectbutton/CustomConnectButton';
-import { getNonce, login } from '@/services/api/login';
+import { createMemberSession, getMemberSessionByAddress, getNonce, login } from '@/services/api/login';
 import { useSafeState } from 'ahooks';
 import useStore from '@/store/zustand';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -27,6 +27,7 @@ const Header = () => {
     const isMemeRoute = pathname.startsWith('/meme/');
     const { authStatus, setAuthStatus } = useAuthStatusStore();
     const { addressTokenStr } = useWalletAddress();
+    const loginId = useStore((state) => state.loginId);
     const setLoginId = useStore((state) => state.setLoginId);
     // useEvmEventListener();
     const navSearch = useStore((state) => state.navSearch);
@@ -66,13 +67,46 @@ const Header = () => {
     const createSolanaMessage = (nonce: string): string => {
         return `Sign in to FairMeme:${nonce}`;
     };
+    const clearAuthStorage = useCallback(() => {
+        localStorage.removeItem('auth_expirationTime');
+        localStorage.removeItem('access_token');
+    }, []);
     const handleDisconnect = useCallback(() => {
         solanaDisconnect();
         setLoginId(undefined);
         setAuthStatus('unauthenticated');
-        localStorage.removeItem('auth_expirationTime');
-        localStorage.removeItem('access_token');
-    }, [solanaDisconnect, setLoginId, setAuthStatus]);
+        clearAuthStorage();
+    }, [solanaDisconnect, setLoginId, setAuthStatus, clearAuthStorage]);
+    const recoverBasicMemberSession = useCallback(async () => {
+        if (!addressTokenStr || !currentChain) {
+            return false;
+        }
+        try {
+            const res = await getMemberSessionByAddress(addressTokenStr);
+            const member = res.items?.[0];
+            if (member?.id) {
+                setLoginId(member.id);
+                setAuthStatus('authenticated');
+                return true;
+            }
+
+            const created = await createMemberSession({
+                creatorAddress: addressTokenStr,
+                chainID: currentChain,
+            });
+            if (created?.id) {
+                setLoginId(created.id);
+                setAuthStatus('authenticated');
+                return true;
+            }
+        } catch (error) {
+            console.error('Failed to recover basic member session:', error);
+        }
+
+        setLoginId(undefined);
+        setAuthStatus('unauthenticated');
+        return false;
+    }, [addressTokenStr, currentChain, setAuthStatus, setLoginId]);
     useEffect(() => {
         const signIn = async () => {
             try {
@@ -115,15 +149,26 @@ const Header = () => {
                 localStorage.setItem(`access_token`, accessToken);
                 setAuthStatus('authenticated');
             } catch (err) {
-                handleDisconnect();
                 console.error('Error during login:', err);
+                clearAuthStorage();
+                await recoverBasicMemberSession();
             }
         };
 
-        if (publicKey && addressTokenStr && signSolanaMessage && authStatus !== 'loading' && !disconnecting) {
+        if (publicKey && addressTokenStr && signSolanaMessage && authStatus !== 'loading' && !disconnecting && !loginId) {
             signIn();
         }
-    }, [publicKey]);
+    }, [
+        publicKey,
+        addressTokenStr,
+        signSolanaMessage,
+        authStatus,
+        disconnecting,
+        currentChain,
+        clearAuthStorage,
+        recoverBasicMemberSession,
+        loginId,
+    ]);
     useEffect(() => {
         const provider = (window as any)?.solana;
         if (provider?.on) {

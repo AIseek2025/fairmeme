@@ -3,7 +3,6 @@ import {
     SolflareWalletAdapter,
     TorusWalletAdapter,
     LedgerWalletAdapter,
-    WalletConnectWalletAdapter,
     CloverWalletAdapter,
     Coin98WalletAdapter,
     CoinhubWalletAdapter,
@@ -11,7 +10,6 @@ import {
     KeystoneWalletAdapter,
     NightlyWalletAdapter,
     NufiWalletAdapter,
-    UnsafeBurnerWalletAdapter,
     TokenPocketWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 
@@ -28,5 +26,4 @@ export const walletAdapters = [
     new KeystoneWalletAdapter(),
     new NightlyWalletAdapter(),
     new NufiWalletAdapter(),
-    new UnsafeBurnerWalletAdapter(),
 ];
