@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.DS_Store
+
+# secrets
+.env
+!.env.example
+
+# runtime state (must NOT be committed)
+last_processed_slot.json
+last_processed.json
+
+# logs
+*.log

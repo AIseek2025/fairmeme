@@ -1,0 +1,42 @@
+[package]
+name = "fairmeme-sol"
+version = "0.1.0"
+description = "Created with Anchor"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "fairmeme_sol"
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = []
+client = []
+no-log-ix-name = []
+init_if_needed = []
+enable-log = []
+devnet = []
+paramset = []
+
+[dependencies]
+anchor-lang = { version = "0.29.0", features = ["init-if-needed", "event-cpi"] }
+anchor-spl = { version = "0.29.0", features = ["metadata"] }
+spl-token = { version = "4.0.0", features = ["no-entrypoint"] }
+spl-math = { version = "0.2", features = ["no-entrypoint"] }
+spl-memo = "=4.0.0"
+uint = "0.9.1"
+solana-security-txt = "1.1.1"
+solana-program = "<1.17.0"
+
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+overflow-checks = true
+[profile.release.build-override]
+opt-level = 3
+incremental = false
+codegen-units = 1

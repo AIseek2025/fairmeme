@@ -1,0 +1,40 @@
+{
+    "compilerOptions": {
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "types": ["zustand"],
+        "target": "esnext",
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
+        "forceConsistentCasingInFileNames": true,
+        "esModuleInterop": true,
+        "noEmitOnError": false,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    },
+    "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "*.d.ts",
+        ".next/types/**/*.ts",
+        // "vitePlugins/antdResolve/index.mjs",
+        ".eslintrc.cjs",
+        "tailwind.config.ts",
+        "next.config.mjs"
+    ],
+    "exclude": ["node_modules"]
+}

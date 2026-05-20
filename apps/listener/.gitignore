@@ -1,0 +1,13 @@
+bin/
+*.exe
+*.out
+*.test
+.DS_Store
+.idea/
+.vscode/
+
+# real config (use config.example.yaml)
+config.yaml
+
+# logs
+*.log

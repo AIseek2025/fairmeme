@@ -1,0 +1,8 @@
+cache/
+out/
+broadcast/
+.forge-snapshots/
+.DS_Store
+
+# Foundry deps managed via forge install
+# (lib/ is committed; forge-std and openzeppelin etc. live there)

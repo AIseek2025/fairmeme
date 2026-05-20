@@ -1,0 +1,47 @@
+# FairMeme Listener / Price Service — example configuration
+# Copy to config.yaml and fill in real values. NEVER commit secrets.
+
+app:
+  env: "local"
+  port: 8002
+  app_name: "fairmeme-listener"
+  app_url: "0.0.0.0"
+
+mongodb:
+  host: "localhost"
+  port: 27017
+  dbname: "fairmeme"
+  user: "REPLACE_ME"
+  pwd: "REPLACE_ME"
+
+mysql:
+  host: "REPLACE_ME"
+  port: "3306"
+  dbname: "fairmeme"
+  user: "REPLACE_ME"
+  pwd: "REPLACE_ME"
+
+clickhouse:
+  host: "REPLACE_ME"
+  port: 9000
+  dbname: "default"
+  user: "default"
+  pwd: ""
+
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  pwd: "REPLACE_ME"
+  db: 5
+
+awss3:
+  access_key_id: "REPLACE_ME"
+  secret_access_key: "REPLACE_ME"
+  bucket_name: "fairmeme-bucket"
+  region: "ap-southeast-1"
+
+chains:
+  ethereum_rpc: "https://ethereum-rpc.publicnode.com"
+  chainlink_rpc: "https://rpc.payload.de"
+  solana_rpc: "https://api.devnet.solana.com"
+  solana_ws: "wss://api.devnet.solana.com"

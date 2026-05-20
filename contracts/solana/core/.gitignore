@@ -1,0 +1,7 @@
+target/
+node_modules/
+.anchor/
+.DS_Store
+test-ledger/
+
+# generated IDL artifacts (kept under target/idl by Anchor)

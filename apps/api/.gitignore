@@ -1,0 +1,22 @@
+cmd/api/fairmeme-api
+cmd/api/fairmeme-api-binary.tar.gz
+cover.out
+*.gen.go
+internal/ecode/*.go.gen*
+internal/routers/*.go.gen*
+internal/handler/*.go.gen*
+internal/service/*.go.gen*
+docs/swagger/
+
+# generated callvis
+fairmeme-api.gv
+fairmeme-api.svg
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# real configs (use *.example.yml as templates)
+configs/fairmeme.yml
+configs/fairmeme_cc.yml

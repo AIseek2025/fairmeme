@@ -1,0 +1,18 @@
+import { IS_TEST } from './env';
+
+export const GLOBAL_SEED = 'global';
+export const DEFAULT_DECIMALS = 6;
+export const DEFAULT_TOKEN_BALANCE = 1_000_000_000n * BigInt(10 ** DEFAULT_DECIMALS);
+export const DEFAULT_INITIAL_TOKEN_RESERVES = 793_100_000_000_000n;
+export const DEFAULT_INITIAL_VIRTUAL_SOL_RESERVE = 30_000_000_000n;
+export const DEFAULT_INITIAL_VIRTUAL_TOKEN_RESERVE = 1_073_000_000_000_000n;
+export const DEFAULT_TRADE_FEE_POINTS = 50n;
+export const DEFAULT_DEV_FEE_POINTS = 100n;
+export const FAIR_MEME_STATE_SEED = 'fair-meme-state';
+export const PUBLICKEY_FOR_SOLANA_PROGRAM_ID = IS_TEST
+    ? 'HN6v9ASvYLuFbvW6b9tBCKoX6PH546MPKb4R4MSot8c8'
+    : 'CRAZYtDT9DFFQhPMvi9kS3FURoVKh9sAv47fzyiT1YH1';
+export const UNIT_PER_TOKEN = 10 ** 6;
+export const AIRDROP_TOKEN = IS_TEST
+    ? '2CibNdtGN93RxjQ85xHKpFMSNLLMEQmfpMdgPZ4G7rbT'
+    : 'CRAZYruvJ3XWYtDqdEapWvu9ayZRMSvaBJcuWNpxSyBc';

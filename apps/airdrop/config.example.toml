@@ -1,0 +1,46 @@
+# FairMeme Airdrop Service — example configuration
+# Copy to config.toml and fill in real values. NEVER commit secrets.
+
+# Server configuration
+port = "8080"
+
+# Snapshot timestamp (epoch seconds). Check at: https://www.epochconverter.com/
+snapshot-time = 1727654400
+snapshot-slot-change = 100  # for solana
+
+# Redis configuration
+[redis]
+addr = "REDIS_HOST:6379"
+password = "REPLACE_ME"
+db = 0
+
+# Postgres db configuration
+[db]
+host = "DB_HOST"
+user = "REPLACE_ME"
+name = "REPLACE_ME"
+password = "REPLACE_ME"
+port = "5432"
+sslmode = "disable"
+
+# Chain configurations
+[[chains]]
+name = "eth"
+chain-id = 1
+rpc-url = "https://eth.llamarpc.com"
+
+[[chains]]
+name = "base"
+chain-id = 8453
+rpc-url = "https://base.llamarpc.com"
+
+[[chains]]
+name = "bsc"
+chain-id = 56
+rpc-url = "https://binance.llamarpc.com"
+
+[[chains]]
+name = "solana"
+chain-id = 900
+# Use your own Helius API key here
+rpc-url = "https://mainnet.helius-rpc.com/?api-key=REPLACE_ME"

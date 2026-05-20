@@ -1,0 +1,12 @@
+// import logo from './fairmemeLogo2.png';
+import search from './serach2.png';
+import xSpace from './xSpace.png';
+import wallet from './wallet2.png';
+import navIcon from './navIcon2.png';
+import solanaIcon from './solana.png';
+import ethIcon from './ETH.png';
+import baseIcon from './Base2.png';
+import bnbIcon from './bnb2.png';
+import logo from './logo2.png';
+import FairMeme from './FairMeme.png';
+export { logo, search, xSpace, wallet, navIcon, solanaIcon, ethIcon, baseIcon, bnbIcon, FairMeme };

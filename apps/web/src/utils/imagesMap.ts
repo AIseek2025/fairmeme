@@ -1,0 +1,45 @@
+const COMMON = {
+    BASE2_PNG: '/images/common/Base2.png',
+    FAIRMEME_PNG: '/images/common/FairMeme.png',
+    ETH_PNG: '/images/common/ETH.png',
+    BASE_SVG: '/images/common/base.svg',
+    BNB_SVG: '/images/common/bnb.svg',
+    BNB2_PNG: '/images/common/bnb2.png',
+    FAIRMEMELOGO2_PNG: '/images/common/fairmemeLogo2.png',
+    DEFAULT_IMG_SVG: '/images/common/default_img.svg',
+    DOT_LINE_SVG: '/images/common/dot_line.svg',
+    ETH_SVG: '/images/common/eth.svg',
+    INDEX_TS: '/images/common/index.ts',
+    LOGO2_PNG: '/images/common/logo2.png',
+    NAVICON2_PNG: '/images/common/navIcon2.png',
+    SCROLLBAR_SVG: '/images/common/scrollbar.svg',
+    SELECTICON_PNG: '/images/common/selectIcon.png',
+    SERACH2_PNG: '/images/common/serach2.png',
+    SOLANA_PNG: '/images/common/solana.png',
+    SOLANA_SVG: '/images/common/solana.svg',
+    WALLET2_PNG: '/images/common/wallet2.png',
+    XSPACE_PNG: '/images/common/xSpace.png',
+};
+const DOCS = {
+    BOOK_ICON_SVG: '/images/docs/book_icon.svg',
+    ICON_1_SVG: '/images/docs/icon_1.svg',
+    ICON_2_SVG: '/images/docs/icon_2.svg',
+    ICON_3_SVG: '/images/docs/icon_3.svg',
+    ICON_4_SVG: '/images/docs/icon_4.svg',
+    ICON_5_SVG: '/images/docs/icon_5.svg',
+};
+const SQUARE = {
+    COPY_SVG: '/images/square/copy.svg',
+    DEFAULT_AVATAR_PNG: '/images/square/default_avatar.png',
+    DEFAULT_AVATAR_SVG: '/images/square/default_avatar.svg',
+    EMPTY_SVG: '/images/square/empty.svg',
+    HOME_SVG: '/images/square/home.svg',
+    LINK_SVG: '/images/square/link.svg',
+    PROFILE_SVG: '/images/square/profile.svg',
+    SETTING_SVG: '/images/square/setting.svg',
+};
+export const Images = {
+    COMMON,
+    DOCS,
+    SQUARE,
+};

@@ -1,0 +1,14 @@
+bin/
+*.exe
+*.out
+*.test
+.DS_Store
+.idea/
+.vscode/
+
+# secrets / real configs
+.env
+config.toml
+
+# logs
+*.log

@@ -1,0 +1,32 @@
+/* custom-theme.css */
+@import url('~primereact/resources/themes/lara-light-indigo/theme.css');
+
+:root {
+    --primary-color: #ffd41a;
+    --primary-light-color: #ffe566;
+    --primary-dark-color: #e6bc17;
+    --primary-darker-color: #cca514;
+    --primary-text-color: #ffffff;
+
+    --secondary-color: #f2e6b8;
+    --secondary-light-color: #f7f0d6;
+    --secondary-dark-color: #e6d9a5;
+    --secondary-text-color: #ffffff;
+
+    --surface-a: #fff6cc;
+    --surface-b: #fff3b8;
+    --surface-c: #fff0a3;
+    --surface-d: #ffed8f;
+    --surface-e: #ffea7a;
+    --surface-f: #ffe766;
+
+    --text-color: #806a0d;
+    --text-color-secondary: #998012;
+    --surface-ground: #fffae6;
+    --surface-section: var(--surface-a);
+    --surface-card: var(--surface-b);
+    --surface-overlay: var(--surface-c);
+    --surface-border: var(--surface-d);
+    --surface-hover: var(--surface-e);
+    --focus-ring: 0 0 0 0.2rem rgba(255, 212, 26, 0.5);
+}

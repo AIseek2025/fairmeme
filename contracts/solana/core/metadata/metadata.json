@@ -1,0 +1,11 @@
+{
+  "name": "FairMeme",
+  "symbol": "FAIR",
+  "description": "The fairest meme launch platform. Let's go fair!",
+  "uri": "https://fairmeme.io/static/icon.png",
+  "extensions": {
+    "website": "https://fairmeme.io",
+    "twitter": "",
+    "telegram": ""
+  }
+}
